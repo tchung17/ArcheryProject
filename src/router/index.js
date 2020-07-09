@@ -23,6 +23,7 @@ const routes = [
         beforeEnter: (to, from, next) => {
             if (to.name === "PlayFriend") {
                 sessionStorage.clear();
+                console.log("storage cleared")
             }
             next();
         },

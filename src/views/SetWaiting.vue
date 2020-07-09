@@ -1,12 +1,14 @@
 <template>
     <div class="container">
         <score-header/>
-        <br />
-        <br />
-        <br />
-        <div class="button-container" @click="startSet">
-            <el-button class="button" type="primary" :loading="loading">
-                {{ msg }}
+        <div class="message-container">
+            <div class="message" style="">
+                <h1>
+                    {{ msg }}
+                </h1>
+            </div>
+            <el-button class="button" type="primary"  @click="startSet" :loading="loading">
+                Ready
             </el-button>
         </div>
     </div>
@@ -48,7 +50,7 @@ export default {
 		},
     },
     methods: {
-        ...mapActions(["readyUp", "setWinner", "setListener"]),
+        ...mapActions(["readyUp", "setWinner", "startListener"]),
         startSet() {
             // let ref = db.collection("sessions").doc(this.getSessionID);
             if (this.loading == false) {
@@ -62,7 +64,7 @@ export default {
         },
     },
     mounted () {
-        this.msg = `Start Set ${this.getMeta.setNumber}`;
+        this.msg = `Set ${this.getMeta.setNumber}`;
     },
 };
 </script>

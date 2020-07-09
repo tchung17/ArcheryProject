@@ -4,14 +4,16 @@
 		<div class="lower-container">
 			<div class="time-bar">
 				<br />
+                <h3>{{ time }}s</h3>
 				<el-progress
 					:percentage="time * 5"
 					:show-text="false"
+					:color="colors"
 				></el-progress>
 			</div>
 			<br />
 			<div class="arrow-entry" v-if="yourTurn">
-				<div class="">Please Enter Your Arrow</div>
+				<h1>Enter Your Arrow</h1>
 				<br />
 				<el-input-number
 					v-model="num"
@@ -27,6 +29,9 @@
 					</el-button>
 				</div>
 			</div>
+            <div class="waiting" v-else>
+                <h3>Opponent is shooting...</h3>
+            </div>
 		</div>
 	</div>
 </template>
@@ -45,6 +50,11 @@ export default {
 			num: 10,
 			time: 20,
 			interval: null,
+			colors: [
+				{color: '#f56c6c', percentage: 30},
+				{color: '#e6a23c', percentage: 50},
+				{color: '#5cb87a', percentage: 51},
+			],
 		}
 	},
 	computed: {

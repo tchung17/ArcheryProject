@@ -134,7 +134,7 @@ export default {
 				lock: true,
 				text: 'Waiting for opponent to join...',
 				spinner: 'el-icon-loading',
-				background: 'rgba(0, 0, 0, 0.5)',
+				background: 'rgba(0, 0, 0, 0.3)',
 			})
 			setTimeout(() => {
 				this.$copyText(this.getSessionID).then(
