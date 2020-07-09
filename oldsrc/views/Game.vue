@@ -3,6 +3,9 @@
 		<score-header />
 		<div class="lower-container">
 			<div class="time-bar">
+				<div class="time">
+					{{ yourTurn }}
+				</div>
 				<br />
 				<el-progress
 					:percentage="time * 5"

@@ -5,22 +5,17 @@
                 <div class="">{{ p1Name }}</div>
                 <div class="">{{ p1Score }}</div>
             </div>
-            <div class="" style="display:flex; justify-content: space-around">
-                <div class="">{{ p1Arrows[0] }}</div>
-                <div class="">{{ p1Arrows[1] }}</div>
-                <div class="">{{ p1Arrows[2] }}</div>
+            <div v-for="(arrow1, index) in p1Arrows" :key="index" class="text item">
+                {{ arrow1 }}
             </div>
-            
         </el-card>
         <el-card class="box-card">
             <div slot="header" class="clearfix">
                 <div class="">{{ p2Name }}</div>
                 <div class="">{{ p2Score }}</div>
             </div>
-            <div class="" style="display:flex; justify-content: space-around">
-                <div class="">{{ p2Arrows[0] }}</div>
-                <div class="">{{ p2Arrows[1] }}</div>
-                <div class="">{{ p2Arrows[2] }}</div>
+            <div v-for="(arrow2, index) in p2Arrows" :key="index" class="text item">
+                {{ arrow2 }}
             </div>
         </el-card>
     </div>
@@ -51,21 +46,15 @@ export default {
                 this.p1Arrows = this.getMeta.p1arrows.slice(
                     indices,
                     indices + 3
-                ).filter(arrow => {
-                    if (arrow == -1) {
-                        arrow = null
-                    }
-                    return arrow
+                ).filter(arrow1 => {
+                    return arrow1 != -1;
                 })
                 
-                this.p2Arrows = this.getMeta.p2arrows.slice(
+                this.p2Arrows = val.p2arrows.slice(
                     indices,
                     indices + 3
-                ).filter(arrow => {
-                    if (arrow == -2) {
-                        arrow = null
-                    }
-                    return arrow
+                ).filter(arrow2 => {
+                    return arrow2 != -2;
                 })
                 this.p1Score = val.p1score
                 this.p2Score = val.p2score

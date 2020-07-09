@@ -147,7 +147,7 @@ export default new Vuex.Store({
                 .then(() => {
                     setTimeout(() => {
                         dispatch("readyUp", payload);
-                    }, 900);
+                    }, 600);
                 })
                 .catch((err) => {
                     console.log(err);

@@ -3,7 +3,6 @@
 		<div class="code" v-if="showCode">
 			{{ code }}
 		</div>
-        
 		<div class="button-container" v-else>
 			<el-popover
 				placement="top-start"
@@ -105,18 +104,16 @@ export default {
 					console.log(err)
 				}
 			)
-            }, 400)
+            }, 500)
 			setTimeout(() => {
 				this.readyUp(this.code)
-			}, 600)
+			}, 500)
 		},
 	},
 	mounted() {
+		sessionStorage.clear()
 		this.code = ''
-    },
-    beforeCreate () {
-        sessionStorage.clear();
-    },
+	},
 }
 </script>
 

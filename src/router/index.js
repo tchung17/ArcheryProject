@@ -1,58 +1,62 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Landing from '../views/Landing.vue'
-import Login from '../views/Login.vue'
-import PlayFriend from '../views/PlayFriend.vue'
-import PlayRandoms from '../views/PlayRandoms'
-import SetWaiting from '../views/SetWaiting'
-import Game from '../views/Game'
-import WinLose from '../views/WinLose.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Landing from "../views/Landing.vue";
+import Login from "../views/Login.vue";
+import PlayFriend from "../views/PlayFriend.vue";
+import PlayRandoms from "../views/PlayRandoms.vue";
+import SetWaiting from "../views/SetWaiting.vue";
+import Game from "../views/Game.vue";
+import WinLose from "../views/WinLose.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
-  {
-    path: '/',
-    name: 'Login',
-    component: Login
-  },
-  {
-    path: '/landing/friend',
-    name: 'PlayFriend',
-    component: PlayFriend,
-  },
-  {
-    path: '/landing/randoms',
-    name: 'PlayRandoms',
-    component: PlayRandoms,
-  },
-  {
-    path: '/setwaiting',
-    name: 'SetWaiting',
-    component: SetWaiting,
-  },
-  {
-    path: '/game',
-    name: 'Game',
-    component: Game,
-  },
-  {
-    path: '/landing',
-    name: 'Landing',
-    component: Landing,
-  },
-  {
-    path: '/game/end',
-    name: 'WinLose',
-    component: WinLose,
-  },
-  
-]
+    {
+        path: "/",
+        name: "Login",
+        component: Login,
+    },
+    {
+        path: "/landing/friend",
+        name: "PlayFriend",
+        component: PlayFriend,
+        beforeEnter: (to, from, next) => {
+            if (to.name === "PlayFriend") {
+                sessionStorage.clear();
+            }
+            next();
+        },
+    },
+    {
+        path: "/landing/randoms",
+        name: "PlayRandoms",
+        component: PlayRandoms,
+    },
+    {
+        path: "/setwaiting",
+        name: "SetWaiting",
+        component: SetWaiting,
+    },
+    {
+        path: "/game",
+        name: "Game",
+        component: Game,
+    },
+    {
+        path: "/landing",
+        name: "Landing",
+        component: Landing,
+    },
+    {
+        path: "/game/end",
+        name: "WinLose",
+        component: WinLose,
+    },
+];
 
 const router = new VueRouter({
-  mode: 'history',
-  routes
-})
+    mode: "history",
+    routes,
+});
 
-
-export default router
+export default router;

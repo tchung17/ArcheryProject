@@ -1,6 +1,5 @@
 <template>
     <div class="container">
-        <score-header/>
         <br />
         <br />
         <br />
@@ -13,24 +12,21 @@
 </template>
 
 <script>
-import ScoreHeader from "../components/ScoreHeader.vue";
+//import ScoreHeader from "../components/ScoreHeader.vue";
 import db from "../firebase/init";
 import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
 export default {
     name: "SetWaiting",
-    components: {
-        ScoreHeader,
-    },
     data() {
         return {
-            msg: "",
+            msg: "Start Set",
             loading: false,
             unsubscribe: null,
         };
     },
     computed: {
-        ...mapGetters(["getSessionID", "getWhichPlayer", "getReady", "getMeta", "getListener"]),
+        ...mapGetters(["getSessionID", "getWhichPlayer", "getReady", "getMeta"]),
     },
     watch: {
         getReady: function (newVal, oldVal) {
@@ -38,19 +34,11 @@ export default {
                 this.$router.push("/game");
             }
         },
-        getListener: {
-			handler: function() {
-				if (!this.getListener) {
-					this.startListener()
-				}
-			},
-			immediate: true,
-		},
     },
     methods: {
-        ...mapActions(["readyUp", "setWinner", "setListener"]),
+        ...mapActions(["readyUp", "setWinner"]),
         startSet() {
-            // let ref = db.collection("sessions").doc(this.getSessionID);
+            let ref = db.collection("sessions").doc(this.getSessionID);
             if (this.loading == false) {
                 this.loading = true;
                 this.msg = "Waiting";
@@ -60,9 +48,6 @@ export default {
                 this.msg = "Start Set";
             }
         },
-    },
-    mounted () {
-        this.msg = `Start Set ${this.getMeta.setNumber}`;
     },
 };
 </script>
