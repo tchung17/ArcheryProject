@@ -1,40 +1,78 @@
 <template>
 	<div class="container">
-		<div class="code" v-if="showCode">
+		<div class="code" v-if="showCode" style="margin-bottom: 100px;">
 			{{ code }}
 		</div>
-        
-		<div class="button-container" v-else>
-			<el-popover
-				placement="top-start"
-				title="Create a session"
-				trigger="hover"
-				content="Share this code with a friend to start your match!"
+
+		<div class="button-container" style="width:85%" v-else>
+			<el-carousel
+				indicator-position="outside"
+				:interval="4000"
+				direction="vertical"
+				:autoplay="true"
 			>
-				<el-button
-					class="button"
-					style="width: 100%;"
-					type="primary"
-					slot="reference"
-					@click="generateCode()"
-				>
-					Generate a New Code
-				</el-button>
-			</el-popover>
-			<el-input
-				style="margin-top: 10px;"
-				placeholder="Enter your code"
-				v-model="code"
-			></el-input>
-			<el-button
-				class="button"
-				style="width:100%; margin-top:10px;"
-				@click="submitCode"
-				type="primary"
-				:loading="loading"
-			>
-				Submit
-			</el-button>
+				<el-carousel-item>
+					<div class="wrapper" style="text-align: center">
+						<div
+							class="card-box"
+							style="width: 40%; display: inline-block"
+						>
+							<div
+								class="text"
+								style="width: 40%; margin: 10px; text-align: left;"
+							>
+								<strong>Create a live match!</strong><hr>
+								Invite your opponent by sharing a unique code
+							</div>
+							<el-popover
+								placement="top-end"
+								content="Create a session"
+								trigger="hover"
+							>
+								<el-button
+									class="button"
+									style="width: 100%; margin-top: 10px;"
+									type="primary"
+									slot="reference"
+									@click="generateCode()"
+								>
+									Generate Code
+								</el-button>
+							</el-popover>
+						</div>
+					</div>
+				</el-carousel-item>
+				<el-carousel-item>
+					<div class="wrapper" style="text-align: center">
+						<div
+							class="card-box"
+							style="width: 40%; display: inline-block"
+						>
+							<div
+								class="text"
+								style="width: 40%; margin: 10px; text-align: left"
+							>
+								<strong>Join a match!</strong><hr>
+								Enter your code below
+							</div>
+							<el-input
+								style="margin-top: 10px; width:100%;"
+								placeholder="Enter code"
+								v-model="code"
+							></el-input>
+							<el-button
+								class="button"
+								style="width:100%; margin-top:10px;"
+								@click="submitCode"
+								type="primary"
+								:loading="loading"
+							>
+								Submit
+							</el-button>
+						</div>
+					</div>
+				</el-carousel-item>
+			</el-carousel>
 		</div>
 	</div>
 </template>
@@ -91,21 +129,27 @@ export default {
 		},
 		generateCode() {
 			this.createSession()
-            this.showCode = true
-            setTimeout(() => {
-                this.$copyText(this.getSessionID).then(
-				() => {
-					this.$message({
-						showClose: true,
-						message: 'Code copied to clipboard!',
-						type: 'success',
-					})
-				},
-				err => {
-					console.log(err)
-				}
-			)
-            }, 400)
+			this.showCode = true
+			this.loading = this.$loading({
+				lock: true,
+				text: 'Waiting for opponent to join...',
+				spinner: 'el-icon-loading',
+				background: 'rgba(0, 0, 0, 0.5)',
+			})
+			setTimeout(() => {
+				this.$copyText(this.getSessionID).then(
+					() => {
+						this.$message({
+							showClose: true,
+							message: 'Code copied to clipboard!',
+							type: 'success',
+						})
+					},
+					err => {
+						console.log(err)
+					}
+				)
+			}, 400)
 			setTimeout(() => {
 				this.readyUp(this.code)
 			}, 600)
@@ -113,9 +157,12 @@ export default {
 	},
 	mounted() {
 		this.code = ''
+	},
+	beforeCreate() {
+		sessionStorage.clear()
     },
-    beforeCreate () {
-        sessionStorage.clear();
+    beforeDestroy () {
+        this.loading.close();
     },
 }
 </script>
