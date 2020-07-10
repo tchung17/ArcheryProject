@@ -50,7 +50,10 @@ function isSetCompleted(arrows1, arrows2) {
 }
 //searches for -1 or -2. Going to migrate to all -1 soon.
 function getArrowsAverage(arrows, player) {
-	let index = arrows.indexOf(-player)
+    let index = arrows.indexOf(-player)
+    if (index == -1) {
+        return arrows.reduce((score, arrow) => score + arrow / arrows.length, 0)
+    }
 	return arrows
 		.slice(0, index)
 		.reduce((score, arrow) => score + arrow / index, 0)
@@ -58,9 +61,9 @@ function getArrowsAverage(arrows, player) {
 }
 
 ;(function main() {
-    let test1 = [9, 8, 10, 8, 9, 10, -1, -1]
-    let test2 = [9, 8, 10, 8, 9, 10, -2, -2]
-	console.log(getSetWinner(test1, test2))
+    let test1 = [9, 8, 10, 8, 9, 10, 9, 10]
+    let test2 = [9, 8, 10, 8, 9, 10, 1, 1]
+	console.log(getArrowsAverage(test1, 1))
 })()
 
 export default {

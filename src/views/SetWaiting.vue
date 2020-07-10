@@ -43,7 +43,7 @@ export default {
         getListener: {
 			handler: function() {
 				if (!this.getListener) {
-					this.startListener()
+					this.listen()
 				}
             },
             immediate: true,
@@ -51,16 +51,19 @@ export default {
     },
     methods: {
         ...mapActions(["readyUp", "setWinner", "startListener"]),
-        startSet() {
+        async startSet() {
             if (this.loading == false) {
                 this.loading = true;
                 this.msg = "Waiting";
-                this.readyUp();
+                await this.readyUp();
             } else {
                 this.loading = false;
                 this.msg = "Start Set";
             }
         },
+        async listen() {
+            await this.startListener
+        }
     },
     mounted () {
         console.log("mounted")

@@ -9,20 +9,19 @@ const vuexPersist = new VuexPersist({
 	storage: window.sessionStorage,
 })
 Vue.use(Vuex)
-let initialMeta = {
-	turn: 1,
-	p1arrows: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-	p2arrows: [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2],
-	setNumber: 1,
-	p1score: 0,
-	p2score: 0,
-	ready: 1,
-}
 export default new Vuex.Store({
-	// plugins: [vuexPersist.plugin],
+	plugins: [vuexPersist.plugin],
 	state: {
 		playerID: 'johnny',
-		meta: initialMeta,
+		meta: {
+            turn: 1,
+            p1arrows: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
+            p2arrows: [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2],
+            setNumber: 1,
+            p1score: 0,
+            p2score: 0,
+            ready: 1,
+        },
 		winner: 0,
 		whichPlayer: 2,
 		yourTurn: 0,
@@ -59,7 +58,8 @@ export default new Vuex.Store({
 		},
 	},
 	mutations: {
-		setMeta(state, payload) {
+        setMeta(state, payload) {
+            console.log("from meta @ ready changed to " + payload.ready)
 			state.meta = payload
         },
         switchTurn(state) {
@@ -91,10 +91,20 @@ export default new Vuex.Store({
 	actions: {
 		//resets state except for your playerID
         wipeState({ commit, state }) {
+            const initialMeta = {
+                turn: 1,
+                p1arrows: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
+                p2arrows: [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2],
+                setNumber: 1,
+                p1score: 0,
+                p2score: 0,
+                ready: 1,
+            }
             if (state.listener) {
 				state.listener()
 				state.listener = null
-			}
+            }
+            console.log("from wipe @ ready changed to " + initialMeta.ready)
 			state.meta = initialMeta
 			state.winner = 0
 			state.whichPlayer = 2
@@ -123,7 +133,16 @@ export default new Vuex.Store({
 		},
 		createSession({commit, state, dispatch}) {
 			return new Promise(
-				(resolve, reject) => {
+                (resolve, reject) => {
+                    const initialMeta = {
+                        turn: 1,
+                        p1arrows: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
+                        p2arrows: [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2],
+                        setNumber: 1,
+                        p1score: 0,
+                        p2score: 0,
+                        ready: 1,
+                    }
 					db.collection('sessions')
 						.add({
 							completed: false,
@@ -131,16 +150,12 @@ export default new Vuex.Store({
 							p1ID: state.playerID,
 							meta: JSON.stringify(initialMeta),
 						})
-						.then(doc => {
+						.then(async doc => {
 							commit('setSessionID', doc.id)
 							commit('setWhichPlayer', 1)
-                            dispatch('startListener').then(() => [
-                                resolve()
-                            ])
+                            await dispatch('startListener')
+                            resolve()
 						})
-				},
-				err => {
-					reject(err)
 				}
 			)
 		},
@@ -157,15 +172,11 @@ export default new Vuex.Store({
 								merge: true,
 							}
 						)
-						.then(() => {
+						.then(async () => {
 							commit('setSessionID', payload)
-                            dispatch('startListener').then(() => {
-                                resolve()
-                            })
+                            await dispatch('startListener')
+                            resolve()
 						})
-				},
-				err => {
-					reject(err)
 				}
 			)
 		},
@@ -174,7 +185,11 @@ export default new Vuex.Store({
 				if (state.listener) {
 					console.log('listener cleared')
 					state.listener()
-				}
+                }
+                if (!state.sessionID) {
+                    console.log('listener prevented')
+                    resolve()
+                }
 				state.listener = db
 					.collection('sessions')
 					.doc(state.sessionID)
@@ -188,9 +203,9 @@ export default new Vuex.Store({
 			})
 		},
 		submitArrow({commit, state, dispatch}, payload) {
-			return new Promise((resolve, reject) => {
+			return new Promise(async (resolve, reject) => {
 				if (!state.listener) {
-					dispatch('startListener')
+					await dispatch('startListener')
                 }
 				commit("switchTurn")
 				let index1 = state.meta.p1arrows.indexOf(-1)
@@ -212,13 +227,16 @@ export default new Vuex.Store({
 						state.meta.p2score += 1
 					}
                     state.meta.turn = state.meta.p1score > state.meta.p2score ? 2 : 1
-				}
-				db.collection('sessions')
+                }
+                await db.collection('sessions')
 					.doc(state.sessionID)
 					.set({meta: JSON.stringify(state.meta)}, {merge: true})
-					.then(() => {
-						resolve()
-					})
+				// db.collection('sessions')
+				// 	.doc(state.sessionID)
+				// 	.set({meta: JSON.stringify(state.meta)}, {merge: true})
+				// 	.then(() => {
+				// 		resolve()
+				// 	})
 			})
 		},
 	},

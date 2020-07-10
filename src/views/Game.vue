@@ -87,7 +87,7 @@ export default {
 		},
 		p1score: {
 			handler: function(val, oldVal) {
-				console.log('p1' + val)
+				console.log('p1 ' + val)
 				if (val >= 3) {
 					this.setWinner(1)
 					this.$router.push({
@@ -121,7 +121,7 @@ export default {
 		},
 		p2score: {
 			handler: function(val, oldVal) {
-				console.log('p2' + val)
+				console.log('p2 ' + val)
 				if (val >= 3) {
 					this.setWinner(2)
 					this.$router.push({
@@ -166,21 +166,13 @@ export default {
 			this.time = 20
 			this.interval = setInterval(this.timerTick, 1000)
 		},
-		submit(num) {
-			this.submitArrow(num).then(() => {
-				this.$message({
+		async submit(num) {
+            await this.submitArrow(num)
+            this.$message({
 					showClose: true,
 					message: `You shot a ${num}`,
 					type: 'success',
 				})
-			})
-			// let storage = Object.entries(JSON.parse(sessionStorage.getItem('my-app'))).filter((value) => {
-			//     if (value[0] == 'playerID') {
-			//         console.log(value[1])
-			//         return value
-			//     }
-			// })
-			// console.log(storage[0][0])
 		},
 	},
 	mounted() {

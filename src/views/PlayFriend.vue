@@ -94,7 +94,6 @@ export default {
 			code: '',
 			showCode: false,
 			loading: null,
-			unsubscribe: null,
 			readyToWatch: false,
 		}
 	},
@@ -102,10 +101,10 @@ export default {
 		getReady: {
 			handler: function(val, oldVal) {
 				console.log('changed to ' + val)
-				if (oldVal == 1 && val == 0  && this.readyToWatch) {
+				if (oldVal == 1 && val == 0 && this.readyToWatch) {
 					this.$router.push({name: 'SetWaiting'})
 				}
-            },
+			},
 		},
 		getSessionID: {
 			handler: function(val) {
@@ -115,7 +114,7 @@ export default {
 	},
 	methods: {
 		...mapActions(['createSession', 'joinSession', 'readyUp', 'wipeState']),
-		submitCode() {
+		async submitCode() {
 			let ref = db.collection('sessions').doc(this.code)
 			ref.get().then(doc => {
 				if (!doc.exists) {
@@ -124,13 +123,12 @@ export default {
 				}
 			})
 			if (this.getWhichPlayer == 2) {
-				this.readyToWatch = true
-				this.joinSession(this.code).then(() => {
-					this.readyUp()
-				})
+                this.readyToWatch = true
+                await this.joinSession(this.code)
+                await this.readyUp()
 			}
 		},
-		generateCode() {
+		async generateCode() {
 			this.readyToWatch = true
 			this.showCode = true
 			this.loading = this.$loading({
@@ -139,27 +137,19 @@ export default {
 				spinner: 'el-icon-loading',
 				background: 'rgba(0, 0, 0, 0.1)',
 			})
-			this.createSession().then(() => {
-				this.$copyText(this.getSessionID).then(() => {
-					this.$message({
-						showClose: true,
-						message: 'Code copied to clipboard!',
-						type: 'success',
-					})
-				})
+			await this.createSession()
+			await this.$copyText(this.getSessionID)
+			this.$message({
+				showClose: true,
+				message: 'Code copied to clipboard!',
+				type: 'success',
 			})
 		},
 	},
 	mounted() {
 		this.code = ''
-		//sessionStorage.clear()
+		sessionStorage.clear()
 		this.wipeState()
-		// let storage = Array.from(JSON.parse(sessionStorage.getItem('my-app'))).forEach(item => {
-		//     console.log(item)
-		// })
-
-		//sessionStorage.setItem('my-app')
-
 		console.log('mounted')
 	},
 	beforeRouteLeave(to, from, next) {

@@ -73,4 +73,9 @@ const router = new VueRouter({
     routes,
 });
 
+// router.beforeEach(async (to, from, next) => {
+//     console.log("before each router guard called")
+//     store.dispatch("startListener") //has built in !sessionID rejection
+//     next()
+// })
 export default router;
