@@ -45,14 +45,13 @@ export default {
 				if (!this.getListener) {
 					this.startListener()
 				}
-			},
-			immediate: true,
+            },
+            immediate: true,
 		},
     },
     methods: {
         ...mapActions(["readyUp", "setWinner", "startListener"]),
         startSet() {
-            // let ref = db.collection("sessions").doc(this.getSessionID);
             if (this.loading == false) {
                 this.loading = true;
                 this.msg = "Waiting";
@@ -64,7 +63,9 @@ export default {
         },
     },
     mounted () {
+        console.log("mounted")
         this.msg = `Set ${this.getMeta.setNumber}`;
+        
     },
 };
 </script>

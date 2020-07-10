@@ -8,6 +8,7 @@
 			<el-carousel
 				indicator-position="outside"
 				:interval="4000"
+				trigger="click"
 				direction="vertical"
 				:autoplay="true"
 			>
@@ -21,7 +22,8 @@
 								class="text"
 								style="width: 40%; margin: 10px; text-align: left;"
 							>
-								<strong>Create a live match!</strong><hr>
+								<strong>Create a live match!</strong>
+								<hr />
 								Invite your opponent by sharing a unique code
 							</div>
 							<el-popover
@@ -52,7 +54,8 @@
 								class="text"
 								style="width: 40%; margin: 10px; text-align: left"
 							>
-								<strong>Join a match!</strong><hr>
+								<strong>Join a match!</strong>
+								<hr />
 								Enter your code below
 							</div>
 							<el-input
@@ -90,29 +93,28 @@ export default {
 		return {
 			code: '',
 			showCode: false,
-			loading: false,
-			unsubscribe: null,
+			loading: null,
+            unsubscribe: null,
+            readyToWatch: false,
 		}
 	},
 	watch: {
 		getReady: {
 			handler: function(val, oldVal) {
-				if (oldVal == 1 && val == 0) {
+				if (oldVal == 1 && val == 0 && this.readyToWatch) {
 					console.log('pushed')
 					this.$router.push({name: 'SetWaiting'})
 				}
 			},
-			immediate: true,
 		},
 		getSessionID: {
 			handler: function(val) {
 				this.code = val
 			},
-			immediate: true,
 		},
 	},
 	methods: {
-		...mapActions(['createSession', 'joinSession', 'readyUp']),
+		...mapActions(['createSession', 'joinSession', 'readyUp', 'wipeState']),
 		submitCode() {
 			let ref = db.collection('sessions').doc(this.code)
 			ref.get().then(doc => {
@@ -122,48 +124,51 @@ export default {
 				}
 			})
 			if (this.getWhichPlayer == 2) {
-				return this.joinSession(this.code)
+                this.readyToWatch = true;
+				return this.joinSession(this.code);
 			} else {
+                console.log("shouldnt happen")
 				return this.readyUp(this.code)
 			}
 		},
 		generateCode() {
-			this.createSession()
-			this.showCode = true
-			this.loading = this.$loading({
-				lock: true,
-				text: 'Waiting for opponent to join...',
-				spinner: 'el-icon-loading',
-				background: 'rgba(0, 0, 0, 0.3)',
-			})
-			setTimeout(() => {
-				this.$copyText(this.getSessionID).then(
+            this.createSession().then(()=>{
+                this.$copyText(this.getSessionID).then(
 					() => {
 						this.$message({
 							showClose: true,
 							message: 'Code copied to clipboard!',
 							type: 'success',
-						})
-					},
-					err => {
-						console.log(err)
-					}
-				)
-			}, 400)
-			setTimeout(() => {
-				this.readyUp(this.code)
-			}, 600)
+                        })
+                        this.readyUp(this.code)
+                    },
+                )
+            })
+            this.readyToWatch = true;
+			this.showCode = true
+			this.loading = this.$loading({
+				lock: true,
+				text: 'Waiting for opponent to join...',
+				spinner: 'el-icon-loading',
+				background: 'rgba(0, 0, 0, 0.1)',
+			})
 		},
-	},
+    },
 	mounted() {
-		this.code = ''
-	},
-	beforeCreate() {
-		sessionStorage.clear()
+        this.code = '';
+        this.wipeState();
+        sessionStorage.clear();
+        console.log("mounted")
     },
-    beforeDestroy () {
-        this.loading.close();
+    beforeRouteLeave(to, from, next) {
+        if(this.loading) {
+            this.loading.close();
+        }
+        this.readyToWatch = false;
+        console.log("before leave")
+        next();
     },
+
 }
 </script>
 

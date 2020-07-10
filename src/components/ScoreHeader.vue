@@ -95,8 +95,14 @@ export default {
             return percentage > 0 ? `${percentage / 10}` : '0'
         },
         color(player) {
-            let higherAvg = this.p1Average > this.p2Average ? 1 : 2
-            let color =  player === higherAvg ? '#67c23a' : '#e6a23c'
+            let higherAvg = this.p1Average < this.p2Average ? 1 : 2
+            if (this.p1Average == this.p2Average) {
+                higherAvg = 0
+            }
+            let color =  player === higherAvg ? '#F56C6C' : '#e6a23c'
+            if (higherAvg == 0) {
+                color = '#409EFF'
+            }
             return color
         }
     },

@@ -4,7 +4,7 @@
 		<div class="lower-container">
 			<div class="time-bar">
 				<br />
-                <h3>{{ time }}s</h3>
+				<h3>{{ time }}s</h3>
 				<el-progress
 					:percentage="time * 5"
 					:show-text="false"
@@ -29,9 +29,9 @@
 					</el-button>
 				</div>
 			</div>
-            <div class="waiting" v-else>
-                <h3>Opponent is shooting...</h3>
-            </div>
+			<div class="waiting" v-else>
+				<h3>Opponent is shooting...</h3>
+			</div>
 		</div>
 	</div>
 </template>
@@ -62,16 +62,20 @@ export default {
 			'getMeta',
 			'getYourTurn',
 			'getListener',
+			'getWhichPlayer',
 			'getSetNumber',
 		]),
 		yourTurn: function() {
 			this.restartTime()
 			this.num = 10
 			return this.getYourTurn
-		},
-		meta: function() {
-			return this.getMeta
-		},
+        },
+        p1score: function() {
+            return this.getMeta.p1score
+        },
+        p2score: function() {
+            return this.getMeta.p2score
+        }
 	},
 	watch: {
 		getListener: {
@@ -80,29 +84,57 @@ export default {
 					this.startListener()
 				}
 			},
-			immediate: true,
-		},
-		getSetNumber: {
-			handler: function(val, oldVal) {
-				if (this.getMeta.p1score >= 6) {
+        },
+        p1score: {
+            handler: function (val, oldVal) {
+                if (val == oldVal + 1) {
+                    this.$message({
+						showClose: true,
+						message: `You tied set ${this.getSetNumber}`,
+						type: 'success',
+					})
+                } else if (val == oldVal + 2) {
+                    this.$message({
+						showClose: true,
+						message: `Player 1 won set ${this.getSetNumber}`,
+						type: 'success',
+					})
+                }
+                if (val >= 6) {
 					this.setWinner(1)
 					this.$router.push({
 						name: 'WinLose',
 					})
-					return
-				} else if (this.getMeta.p2score >= 6) {
+				} else {
+                    this.$router.push({name: 'SetWaiting'})
+                }
+            }
+        },
+        p2score: {
+            handler: function (val, oldVal) {
+                if (val == oldVal + 1) {
+                    this.$message({
+						showClose: true,
+						message: `You tied set ${this.getSetNumber}`,
+						type: 'success',
+					})
+                } else if (val == oldVal + 2) {
+                    this.$message({
+						showClose: true,
+						message: `Player 2 won set ${this.getSetNumber}`,
+						type: 'success',
+					})
+                }
+                if (val >= 6) {
 					this.setWinner(2)
 					this.$router.push({
 						name: 'WinLose',
 					})
-					return
-				}
-				if (val > oldVal) {
-					this.$router.push({name: 'SetWaiting'})
-				}
-			},
-			immediate: true,
-		},
+				} else {
+                    this.$router.push({name: 'SetWaiting'})
+                }
+            }
+        }
 	},
 	methods: {
 		...mapActions(['submitArrow', 'startListener', 'setWinner']),

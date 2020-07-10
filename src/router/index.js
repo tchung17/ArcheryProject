@@ -7,26 +7,18 @@ import PlayRandoms from "../views/PlayRandoms.vue";
 import SetWaiting from "../views/SetWaiting.vue";
 import Game from "../views/Game.vue";
 import WinLose from "../views/WinLose.vue";
-
+import store from '../store/store.js';
 Vue.use(VueRouter);
 
 const routes = [
     {
         path: "/",
-        name: "Login",
-        component: Login,
+        redirect: '/landing/friend'
     },
     {
         path: "/landing/friend",
         name: "PlayFriend",
         component: PlayFriend,
-        beforeEnter: (to, from, next) => {
-            if (to.name === "PlayFriend") {
-                sessionStorage.clear();
-                console.log("storage cleared")
-            }
-            next();
-        },
     },
     {
         path: "/landing/randoms",
@@ -37,11 +29,25 @@ const routes = [
         path: "/setwaiting",
         name: "SetWaiting",
         component: SetWaiting,
+        beforeEnter: (to, from, next) => {
+            if (!!store.state.sessionID) {
+                next()
+            } else {
+                next('/landing/friend')
+            }
+        }
     },
     {
         path: "/game",
         name: "Game",
         component: Game,
+        beforeEnter: (to, from, next) => {
+            if (!!store.state.sessionID) {
+                next()
+            } else {
+                next('/landing/friend')
+            }
+        }
     },
     {
         path: "/landing",
@@ -52,6 +58,13 @@ const routes = [
         path: "/game/end",
         name: "WinLose",
         component: WinLose,
+        beforeEnter: (to, from, next) => {
+            if (!!store.state.sessionID) {
+                next()
+            } else {
+                next('/landing/friend')
+            }
+        }
     },
 ];
 
