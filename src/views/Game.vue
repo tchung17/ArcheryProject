@@ -87,7 +87,6 @@ export default {
 		},
 		p1score: {
 			handler: function(val, oldVal) {
-				console.log('p1 ' + val)
 				if (val >= 3) {
 					this.setWinner(1)
 					this.$router.push({
@@ -121,7 +120,6 @@ export default {
 		},
 		p2score: {
 			handler: function(val, oldVal) {
-				console.log('p2 ' + val)
 				if (val >= 3) {
 					this.setWinner(2)
 					this.$router.push({

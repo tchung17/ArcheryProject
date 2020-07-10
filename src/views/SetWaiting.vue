@@ -66,9 +66,7 @@ export default {
         }
     },
     mounted () {
-        console.log("mounted")
         this.msg = `Set ${this.getMeta.setNumber}`;
-        
     },
 };
 </script>

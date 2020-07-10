@@ -100,7 +100,6 @@ export default {
 	watch: {
 		getReady: {
 			handler: function(val, oldVal) {
-				console.log('changed to ' + val)
 				if (oldVal == 1 && val == 0 && this.readyToWatch) {
 					this.$router.push({name: 'SetWaiting'})
 				}
