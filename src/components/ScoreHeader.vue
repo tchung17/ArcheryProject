@@ -88,18 +88,24 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters(['getSessionID', 'getSetNumber', 'getMeta']),
+        ...mapGetters(['getSessionID', 'getSetNumber', 'getMeta']),
+        // p1arrows: function() {
+
+        // },
+        // p2arrows: function() {
+
+        // }
     },
     methods: {
         format(percentage) {
             return percentage > 0 ? `${percentage / 10}` : '0'
         },
         color(player) {
-            let higherAvg = this.p1Average < this.p2Average ? 1 : 2
+            let higherAvg = this.p1Average > this.p2Average ? 1 : 2
             if (this.p1Average == this.p2Average) {
                 higherAvg = 0
             }
-            let color =  player === higherAvg ? '#F56C6C' : '#e6a23c'
+            let color =  player === higherAvg ? '#67c23a': '#F56C6C'
             if (higherAvg == 0) {
                 color = '#409EFF'
             }
@@ -142,7 +148,8 @@ export default {
 				this.p1Score = meta.p1score
 				this.p2Score = meta.p2score
 			},
-			immediate: true,
+            immediate: true,
+            deep: true,
 		},
 	},
 	mounted() {

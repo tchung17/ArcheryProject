@@ -94,18 +94,18 @@ export default {
 			code: '',
 			showCode: false,
 			loading: null,
-            unsubscribe: null,
-            readyToWatch: false,
+			unsubscribe: null,
+			readyToWatch: false,
 		}
 	},
 	watch: {
 		getReady: {
 			handler: function(val, oldVal) {
-				if (oldVal == 1 && val == 0 && this.readyToWatch) {
-					console.log('pushed')
+				console.log('changed to ' + val)
+				if (oldVal == 1 && val == 0  && this.readyToWatch) {
 					this.$router.push({name: 'SetWaiting'})
 				}
-			},
+            },
 		},
 		getSessionID: {
 			handler: function(val) {
@@ -124,27 +124,14 @@ export default {
 				}
 			})
 			if (this.getWhichPlayer == 2) {
-                this.readyToWatch = true;
-				return this.joinSession(this.code);
-			} else {
-                console.log("shouldnt happen")
-				return this.readyUp(this.code)
+				this.readyToWatch = true
+				this.joinSession(this.code).then(() => {
+					this.readyUp()
+				})
 			}
 		},
 		generateCode() {
-            this.createSession().then(()=>{
-                this.$copyText(this.getSessionID).then(
-					() => {
-						this.$message({
-							showClose: true,
-							message: 'Code copied to clipboard!',
-							type: 'success',
-                        })
-                        this.readyUp(this.code)
-                    },
-                )
-            })
-            this.readyToWatch = true;
+			this.readyToWatch = true
 			this.showCode = true
 			this.loading = this.$loading({
 				lock: true,
@@ -152,23 +139,37 @@ export default {
 				spinner: 'el-icon-loading',
 				background: 'rgba(0, 0, 0, 0.1)',
 			})
+			this.createSession().then(() => {
+				this.$copyText(this.getSessionID).then(() => {
+					this.$message({
+						showClose: true,
+						message: 'Code copied to clipboard!',
+						type: 'success',
+					})
+				})
+			})
 		},
-    },
+	},
 	mounted() {
-        this.code = '';
-        this.wipeState();
-        sessionStorage.clear();
-        console.log("mounted")
-    },
-    beforeRouteLeave(to, from, next) {
-        if(this.loading) {
-            this.loading.close();
-        }
-        this.readyToWatch = false;
-        console.log("before leave")
-        next();
-    },
+		this.code = ''
+		//sessionStorage.clear()
+		this.wipeState()
+		// let storage = Array.from(JSON.parse(sessionStorage.getItem('my-app'))).forEach(item => {
+		//     console.log(item)
+		// })
 
+		//sessionStorage.setItem('my-app')
+
+		console.log('mounted')
+	},
+	beforeRouteLeave(to, from, next) {
+		if (this.loading) {
+			this.loading.close()
+		}
+		this.readyToWatch = false
+		console.log('before leave')
+		next()
+	},
 }
 </script>
 

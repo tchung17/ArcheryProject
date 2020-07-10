@@ -69,13 +69,13 @@ export default {
 			this.restartTime()
 			this.num = 10
 			return this.getYourTurn
-        },
-        p1score: function() {
-            return this.getMeta.p1score
-        },
-        p2score: function() {
-            return this.getMeta.p2score
-        }
+		},
+		p1score: function() {
+			return this.getMeta.p1score
+		},
+		p2score: function() {
+			return this.getMeta.p2score
+		},
 	},
 	watch: {
 		getListener: {
@@ -84,57 +84,75 @@ export default {
 					this.startListener()
 				}
 			},
-        },
-        p1score: {
-            handler: function (val, oldVal) {
-                if (val == oldVal + 1) {
-                    this.$message({
-						showClose: true,
-						message: `You tied set ${this.getSetNumber}`,
-						type: 'success',
-					})
-                } else if (val == oldVal + 2) {
-                    this.$message({
-						showClose: true,
-						message: `Player 1 won set ${this.getSetNumber}`,
-						type: 'success',
-					})
-                }
-                if (val >= 6) {
+		},
+		p1score: {
+			handler: function(val, oldVal) {
+				console.log('p1' + val)
+				if (val >= 3) {
 					this.setWinner(1)
 					this.$router.push({
 						name: 'WinLose',
 					})
-				} else {
-                    this.$router.push({name: 'SetWaiting'})
-                }
-            }
-        },
-        p2score: {
-            handler: function (val, oldVal) {
-                if (val == oldVal + 1) {
-                    this.$message({
+					return
+				}
+				if (val == oldVal + 1) {
+					this.$message({
 						showClose: true,
 						message: `You tied set ${this.getSetNumber}`,
 						type: 'success',
 					})
-                } else if (val == oldVal + 2) {
-                    this.$message({
-						showClose: true,
-						message: `Player 2 won set ${this.getSetNumber}`,
-						type: 'success',
-					})
-                }
-                if (val >= 6) {
+				} else if (val == oldVal + 2) {
+					if (this.getWhichPlayer == 1) {
+						this.$message({
+							showClose: true,
+							message: `You won set ${this.getSetNumber}`,
+							type: 'success',
+						})
+					} else {
+						this.$message({
+							showClose: true,
+							message: `You lost set ${this.getSetNumber}`,
+							type: 'warning',
+						})
+					}
+				}
+				this.$router.push({name: 'SetWaiting'})
+			},
+		},
+		p2score: {
+			handler: function(val, oldVal) {
+				console.log('p2' + val)
+				if (val >= 3) {
 					this.setWinner(2)
 					this.$router.push({
 						name: 'WinLose',
 					})
-				} else {
-                    this.$router.push({name: 'SetWaiting'})
-                }
-            }
-        }
+					return
+				}
+				if (val == oldVal + 1) {
+					this.$message({
+						showClose: true,
+						message: `You tied set ${this.getSetNumber}`,
+						type: 'success',
+					})
+				} else if (val == oldVal + 2) {
+					if (this.getWhichPlayer == 2) {
+						this.$message({
+							showClose: true,
+							message: `You won set ${this.getSetNumber}`,
+							type: 'success',
+						})
+					} else {
+						this.$message({
+							showClose: true,
+							message: `You lost set ${this.getSetNumber}`,
+							type: 'warning',
+						})
+					}
+				}
+				this.$router.push({name: 'SetWaiting'})
+			},
+		},
 	},
 	methods: {
 		...mapActions(['submitArrow', 'startListener', 'setWinner']),
@@ -149,12 +167,20 @@ export default {
 			this.interval = setInterval(this.timerTick, 1000)
 		},
 		submit(num) {
-			this.submitArrow(num)
-			this.$message({
-				showClose: true,
-				message: `You shot a ${num}`,
-				type: 'success',
+			this.submitArrow(num).then(() => {
+				this.$message({
+					showClose: true,
+					message: `You shot a ${num}`,
+					type: 'success',
+				})
 			})
+			// let storage = Object.entries(JSON.parse(sessionStorage.getItem('my-app'))).filter((value) => {
+			//     if (value[0] == 'playerID') {
+			//         console.log(value[1])
+			//         return value
+			//     }
+			// })
+			// console.log(storage[0][0])
 		},
 	},
 	mounted() {
