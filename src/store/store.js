@@ -59,7 +59,7 @@ export default new Vuex.Store({
 	},
 	mutations: {
         setMeta(state, payload) {
-    
+            console.log("from meta ready changed to: " + state.meta.ready)
 			state.meta = payload
         },
         switchTurn(state) {
@@ -104,12 +104,12 @@ export default new Vuex.Store({
 				state.listener()
 				state.listener = null
             }
-			state.meta = initialMeta
+            state.meta = initialMeta
+            console.log("from wipe ready changed to:" + state.meta.ready)
 			state.winner = 0
 			state.whichPlayer = 2
 			state.yourTurn = 0
 			state.sessionID = ''
-			
 		},
 		setWinner({commit}, payload) {
 			commit('setWinner', payload)

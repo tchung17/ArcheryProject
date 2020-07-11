@@ -10,7 +10,6 @@ import App from './App.vue';
 import VueClipboard from 'vue-clipboard2';
 import { firestorePlugin } from 'vuefire';
 
-Vue.config.productionTip = false
 Vue.use(firestorePlugin)
 Vue.use(VueClipboard)
 Vue.use(ElementUI, { locale });
