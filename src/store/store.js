@@ -59,7 +59,7 @@ export default new Vuex.Store({
 	},
 	mutations: {
         setMeta(state, payload) {
-            console.log("from meta @ ready changed to " + payload.ready)
+    
 			state.meta = payload
         },
         switchTurn(state) {
@@ -104,7 +104,6 @@ export default new Vuex.Store({
 				state.listener()
 				state.listener = null
             }
-            console.log("from wipe @ ready changed to " + initialMeta.ready)
 			state.meta = initialMeta
 			state.winner = 0
 			state.whichPlayer = 2
@@ -183,11 +182,9 @@ export default new Vuex.Store({
 		startListener({commit, state}) {
 			return new Promise((resolve, reject) => {
 				if (state.listener) {
-					console.log('listener cleared')
 					state.listener()
                 }
                 if (!state.sessionID) {
-                    console.log('listener prevented')
                     resolve()
                 }
 				state.listener = db
@@ -198,7 +195,6 @@ export default new Vuex.Store({
 						commit('setMeta', meta)
 						commit('setYourTurn', meta.turn)
 					})
-				console.log('listener init @ ' + state.sessionID)
 				resolve()
 			})
 		},

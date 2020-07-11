@@ -1,6 +1,6 @@
 <template>
 	<div class="container">
-		<div class="code" v-if="showCode" style="margin-bottom: 100px;">
+		<div class="code" v-if="showCode" style="margin-bottom: 250px;">
 			{{ code }}
 		</div>
 
@@ -149,14 +149,12 @@ export default {
 		this.code = ''
 		sessionStorage.clear()
 		this.wipeState()
-		console.log('mounted')
 	},
 	beforeRouteLeave(to, from, next) {
 		if (this.loading) {
 			this.loading.close()
 		}
 		this.readyToWatch = false
-		console.log('before leave')
 		next()
 	},
 }

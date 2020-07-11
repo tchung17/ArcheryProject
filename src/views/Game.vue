@@ -4,11 +4,12 @@
 		<div class="lower-container">
 			<div class="time-bar">
 				<br />
-				<h3>{{ time }}s</h3>
+				<h3>{{ Math.floor(time / 5) }}s</h3>
 				<el-progress
-					:percentage="time * 5"
+					:percentage="time"
+                    :format="format"
 					:show-text="false"
-					:color="colors"
+					color="#F8E9A1"
 				></el-progress>
 			</div>
 			<br />
@@ -40,6 +41,7 @@
 import ScoreHeader from '../components/ScoreHeader.vue'
 import {mapGetters} from 'vuex'
 import {mapActions} from 'vuex'
+import helper from '../store/test'
 export default {
 	name: 'Game',
 	components: {
@@ -48,7 +50,7 @@ export default {
 	data() {
 		return {
 			num: 10,
-			time: 20,
+			time: 100,
 			interval: null,
 			colors: [
 				{color: '#f56c6c', percentage: 30},
@@ -75,7 +77,7 @@ export default {
 		},
 		p2score: function() {
 			return this.getMeta.p2score
-		},
+        },
 	},
 	watch: {
 		getListener: {
@@ -158,11 +160,14 @@ export default {
 			if (this.time > 0) {
 				this.time -= 1
 			}
-		},
+        },
+        format(percentage) {
+            return `${percentage / 5}`
+        },
 		restartTime() {
 			clearInterval(this.interval)
-			this.time = 20
-			this.interval = setInterval(this.timerTick, 1000)
+			this.time = 100
+			this.interval = setInterval(this.timerTick, 200)
 		},
 		async submit(num) {
             await this.submitArrow(num)
@@ -170,11 +175,11 @@ export default {
 					showClose: true,
 					message: `You shot a ${num}`,
 					type: 'success',
-				})
+                })
 		},
 	},
 	mounted() {
-		this.interval = setInterval(this.timerTick, 1000)
+		this.interval = setInterval(this.timerTick, 200)
 	},
 	beforeDestroy() {
 		clearInterval(this.interval)

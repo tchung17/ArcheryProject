@@ -122,9 +122,9 @@ export default {
             } else if (p2 > p1) {
                 higherAvg = 2
             }
-            let color = player === higherAvg ? '#67c23a': '#F56C6C'
+            let color = player === higherAvg ? '#A8D0E6': '#F76C6C'
             if (higherAvg == 0) {
-                color = '#409EFF'
+                color = '#F8E9A1'
             }
             return color
         }

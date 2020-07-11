@@ -1,9 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Landing from "../views/Landing.vue";
 import Login from "../views/Login.vue";
 import PlayFriend from "../views/PlayFriend.vue";
-import PlayRandoms from "../views/PlayRandoms.vue";
 import SetWaiting from "../views/SetWaiting.vue";
 import Game from "../views/Game.vue";
 import WinLose from "../views/WinLose.vue";
@@ -19,11 +17,6 @@ const routes = [
         path: "/landing/friend",
         name: "PlayFriend",
         component: PlayFriend,
-    },
-    {
-        path: "/landing/randoms",
-        name: "PlayRandoms",
-        component: PlayRandoms,
     },
     {
         path: "/setwaiting",
@@ -50,11 +43,6 @@ const routes = [
         }
     },
     {
-        path: "/landing",
-        name: "Landing",
-        component: Landing,
-    },
-    {
         path: "/game/end",
         name: "WinLose",
         component: WinLose,
@@ -73,9 +61,8 @@ const router = new VueRouter({
     routes,
 });
 
-// router.beforeEach(async (to, from, next) => {
-//     console.log("before each router guard called")
-//     store.dispatch("startListener") //has built in !sessionID rejection
-//     next()
-// })
+router.beforeEach(async (to, from, next) => {
+    store.dispatch("startListener") //has built in !sessionID rejection
+    next()
+})
 export default router;

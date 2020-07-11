@@ -36,7 +36,6 @@ function getSetWinner(arrows1, arrows2) {
     }
 }
 
-//hopefully depending on setNumber will be okay.
 function isSetCompleted(arrows1, arrows2) {
     let index1 = arrows1.indexOf(-1) //5 means 5 arrows shot
     let index2 = arrows2.indexOf(-2)
