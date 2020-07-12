@@ -1,14 +1,13 @@
 <template>
 	<div class="container">
-		<div class="code" v-if="showCode" style="margin-bottom: 250px;">
+		<div class="code" v-if="showCode" >
 			{{ code }}
 		</div>
 
-		<div class="button-container" style="width:85%" v-else>
+		<div class="button-container" style="width:85%">
 			<el-carousel
 				indicator-position="outside"
 				:interval="4000"
-				trigger="click"
 				direction="vertical"
 				:autoplay="true"
 			>
@@ -68,7 +67,6 @@
 								style="width:100%; margin-top:10px;"
 								@click="submitCode"
 								type="primary"
-								:loading="loading"
 							>
 								Submit
 							</el-button>
@@ -129,17 +127,19 @@ export default {
 		},
 		async generateCode() {
 			this.readyToWatch = true
-			this.showCode = true
+            this.showCode = true
+            await this.createSession()
+			await this.$copyText(this.getSessionID)
 			this.loading = this.$loading({
 				lock: true,
-				text: 'Waiting for opponent to join...',
+				text: `Waiting for opponent to join...\n${this.getSessionID}`,
 				spinner: 'el-icon-loading',
-				background: 'rgba(0, 0, 0, 0.1)',
+				background: 'rgba(0, 0, 0, 0.7)',
 			})
-			await this.createSession()
-			await this.$copyText(this.getSessionID)
 			this.$message({
-				showClose: true,
+                showClose: true,
+                spinner: "el-icon-loading",
+                target: "button-container",
 				message: 'Code copied to clipboard!',
 				type: 'success',
 			})
@@ -170,5 +170,8 @@ export default {
 }
 .button-container {
 	margin: 30px;
+}
+.spinner {
+    background-color: white !important;
 }
 </style>

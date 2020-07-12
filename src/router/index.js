@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Login from "../views/Login.vue";
+import ShootOff from "../views/ShootOff"
 import PlayFriend from "../views/PlayFriend.vue";
 import SetWaiting from "../views/SetWaiting.vue";
 import Game from "../views/Game.vue";
@@ -17,6 +18,11 @@ const routes = [
         path: "/landing/friend",
         name: "PlayFriend",
         component: PlayFriend,
+    },
+    {
+        path: "/game/shootoff",
+        name: "ShootOff",
+        component: ShootOff
     },
     {
         path: "/setwaiting",

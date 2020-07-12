@@ -7,7 +7,6 @@
 				<h3>{{ Math.floor(time / 5) }}s</h3>
 				<el-progress
 					:percentage="time"
-                    :format="format"
 					:show-text="false"
 					color="#F8E9A1"
 				></el-progress>
@@ -41,7 +40,7 @@
 import ScoreHeader from '../components/ScoreHeader.vue'
 import {mapGetters} from 'vuex'
 import {mapActions} from 'vuex'
-import helper from '../store/test'
+import MathService from '../services/MathService'
 export default {
 	name: 'Game',
 	components: {
@@ -68,7 +67,7 @@ export default {
 			'getSetNumber',
 		]),
 		yourTurn: function() {
-			this.restartTime()
+            this.restartTime()
 			this.num = 10
 			return this.getYourTurn
 		},
@@ -77,80 +76,52 @@ export default {
 		},
 		p2score: function() {
 			return this.getMeta.p2score
-        },
+		},
+		setNumber: function() {
+			return this.getSetNumber
+		},
 	},
 	watch: {
-		getListener: {
-			handler: function() {
-				if (!this.getListener) {
-					this.startListener()
-				}
-			},
-		},
-		p1score: {
+		setNumber: {
 			handler: function(val, oldVal) {
-				if (val >= 3) {
+				if (val == 6) {
+					this.$router.push({name: 'ShootOff'})
+				} else if (this.p1score >= 6) {
 					this.setWinner(1)
 					this.$router.push({
 						name: 'WinLose',
 					})
-					return
-				}
-				if (val == oldVal + 1) {
-					this.$message({
-						showClose: true,
-						message: `You tied set ${this.getSetNumber}`,
-						type: 'success',
-					})
-				} else if (val == oldVal + 2) {
-					if (this.getWhichPlayer == 1) {
-						this.$message({
-							showClose: true,
-							message: `You won set ${this.getSetNumber}`,
-							type: 'success',
-						})
-					} else {
-						this.$message({
-							showClose: true,
-							message: `You lost set ${this.getSetNumber}`,
-							type: 'warning',
-						})
-					}
-				}
-				this.$router.push({name: 'SetWaiting'})
-			},
-		},
-		p2score: {
-			handler: function(val, oldVal) {
-				if (val >= 3) {
+				} else if (this.p2score >= 6) {
 					this.setWinner(2)
 					this.$router.push({
 						name: 'WinLose',
 					})
-					return
-				}
-				if (val == oldVal + 1) {
-					this.$message({
-						showClose: true,
-						message: `You tied set ${this.getSetNumber}`,
-						type: 'success',
-					})
-				} else if (val == oldVal + 2) {
-					if (this.getWhichPlayer == 2) {
+				} else {
+					let winner = MathService.getSetWinner(
+						this.getMeta.p1arrows,
+						this.getMeta.p2arrows
+					)
+					if (winner == 3) {
 						this.$message({
 							showClose: true,
-							message: `You won set ${this.getSetNumber}`,
+							message: `You tied set ${this.setNumber - 1}`,
 							type: 'success',
 						})
-					} else {
+					} else if (this.getWhichPlayer == winner) {
 						this.$message({
 							showClose: true,
-							message: `You lost set ${this.getSetNumber}`,
-							type: 'warning',
+							message: `You won set ${this.setNumber - 1}`,
+							type: 'success',
 						})
-					}
+					} else if (this.getWhichPlayer != winner) {
+						this.$message({
+							showClose: true,
+							message: `You lost set ${this.setNumber - 1}`,
+							type: 'success',
+						})
+                    }
+                    this.$router.push({name: 'SetWaiting'})
 				}
-				this.$router.push({name: 'SetWaiting'})
 			},
 		},
 	},
@@ -160,26 +131,22 @@ export default {
 			if (this.time > 0) {
 				this.time -= 1
 			}
-        },
-        format(percentage) {
-            return `${percentage / 5}`
-        },
+		},
 		restartTime() {
-			clearInterval(this.interval)
+            if (this.interval) {
+                clearInterval(this.interval)
+            }
 			this.time = 100
-			this.interval = setInterval(this.timerTick, 200)
+			this.interval = setInterval(this.timerTick, 190)
 		},
-		async submit(num) {
-            await this.submitArrow(num)
-            this.$message({
-					showClose: true,
-					message: `You shot a ${num}`,
-					type: 'success',
-                })
+		submit(num) {
+			this.submitArrow(num)
+			this.$message({
+				showClose: true,
+				message: `You shot a ${num}`,
+				type: 'success',
+			})
 		},
-	},
-	mounted() {
-		this.interval = setInterval(this.timerTick, 200)
 	},
 	beforeDestroy() {
 		clearInterval(this.interval)

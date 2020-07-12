@@ -51,14 +51,6 @@ export default {
 				this.$router.push('/game')
 			}
 		},
-		getListener: {
-			handler: function() {
-				if (!this.getListener) {
-					this.listen()
-				}
-			},
-			immediate: true,
-		},
 	},
 	methods: {
 		...mapActions(['readyUp', 'setWinner', 'startListener']),
@@ -71,9 +63,6 @@ export default {
 				this.loading = false
 				this.msg = 'Start Set'
 			}
-		},
-		async listen() {
-			await this.startListener
 		},
 	},
 	mounted() {

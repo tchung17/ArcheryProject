@@ -73,28 +73,22 @@
 <script>
 import {mapGetters} from 'vuex'
 import db from '../firebase/init'
-import helper from '../store/test.js'
+import MathService from '../services/MathService'
 export default {
 	name: 'ScoreHeader',
 	data() {
 		return {
 			p1Name: '',
 			p2Name: '',
-			// p1Arrows: [],
-			// p2Arrows: [],
-			// p1Score: 0,
-			// p2Score: 0,
-			// p1Average: 0,
-			// p2Average: 0,
 		}
 	},
 	computed: {
         ...mapGetters(['getSessionID', 'getSetNumber', 'getMeta']),
         p1Arrows: function () {
-            return helper.getSetArrowsFilled(this.getMeta.p1arrows, this.getSetNumber)
+            return MathService.getSetArrowsFilled(this.getMeta.p1arrows, this.getSetNumber)
         },
         p2Arrows: function() {
-            return helper.getSetArrowsFilled(this.getMeta.p2arrows, this.getSetNumber)
+            return MathService.getSetArrowsFilled(this.getMeta.p2arrows, this.getSetNumber)
         },
         p1Score : function() {
             return this.getMeta.p1score
@@ -103,10 +97,10 @@ export default {
             return this.getMeta.p2score
         },
         p1Average: function() {
-            return helper.getArrowsAverage(this.getMeta.p1arrows, 1)
+            return MathService.getArrowsAverage(this.getMeta.p1arrows)
         },
         p2Average: function() {
-            return helper.getArrowsAverage(this.getMeta.p2arrows, 2)
+            return MathService.getArrowsAverage(this.getMeta.p2arrows)
         }
     },
     methods: {
@@ -115,11 +109,9 @@ export default {
         },
         color(player) {
             let higherAvg = 0
-            const p1 = parseFloat(this.p1Average)
-            const p2 = parseFloat(this.p2Average)
-            if (p1 > p2) {
+            if (this.p1Average > this.p2Average) {
                 higherAvg = 1
-            } else if (p2 > p1) {
+            } else if (this.p2Average > this.p1Average) {
                 higherAvg = 2
             }
             let color = player === higherAvg ? '#A8D0E6': '#F76C6C'

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import db from '../firebase/init'
 import VuexPersist from 'vuex-persist'
-import help from './test'
+import MathService from '../services/MathService'
 
 const vuexPersist = new VuexPersist({
 	key: 'my-app',
@@ -15,8 +15,8 @@ export default new Vuex.Store({
 		playerID: 'johnny',
 		meta: {
             turn: 1,
-            p1arrows: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-            p2arrows: [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2],
+            p1arrows: [],
+            p2arrows: [],
             setNumber: 1,
             p1score: 0,
             p2score: 0,
@@ -93,8 +93,8 @@ export default new Vuex.Store({
         wipeState({ commit, state }) {
             const initialMeta = {
                 turn: 1,
-                p1arrows: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-                p2arrows: [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2],
+                p1arrows: [],
+                p2arrows: [],
                 setNumber: 1,
                 p1score: 0,
                 p2score: 0,
@@ -102,7 +102,8 @@ export default new Vuex.Store({
             }
             if (state.listener) {
 				state.listener()
-				state.listener = null
+                state.listener = null
+                console.log("listener cleared from wipe")
             }
             state.meta = initialMeta
             console.log("from wipe ready changed to:" + state.meta.ready)
@@ -135,8 +136,8 @@ export default new Vuex.Store({
                 (resolve, reject) => {
                     const initialMeta = {
                         turn: 1,
-                        p1arrows: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-                        p2arrows: [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2],
+                        p1arrows: [],
+                        p2arrows: [],
                         setNumber: 1,
                         p1score: 0,
                         p2score: 0,
@@ -181,10 +182,7 @@ export default new Vuex.Store({
 		},
 		startListener({commit, state}) {
 			return new Promise((resolve, reject) => {
-				if (state.listener) {
-					state.listener()
-                }
-                if (!state.sessionID) {
+				if (state.listener || !state.sessionID) {
                     resolve()
                 }
 				state.listener = db
@@ -198,42 +196,33 @@ export default new Vuex.Store({
 				resolve()
 			})
 		},
-		submitArrow({commit, state, dispatch}, payload) {
-			return new Promise(async (resolve, reject) => {
-				if (!state.listener) {
-					await dispatch('startListener')
+		async submitArrow({commit, state, dispatch}, payload) {
+            if (!state.listener) {
+                await dispatch('startListener')
+            }
+            commit("switchTurn")
+            if (state.whichPlayer == 1) {
+                state.meta.p1arrows.push(payload)
+            } else if (state.whichPlayer == 2) {
+                state.meta.p2arrows.push(payload)
+            }
+            if (MathService.isSetCompleted(state.meta.p1arrows, state.meta.p2arrows)) {
+                state.meta.setNumber += 1
+                console.log("setnumber updated to" + state.meta.setNumber)
+                let winner = MathService.getSetWinner(state.meta.p1arrows, state.meta.p2arrows)
+                if (winner == 1) {
+                    state.meta.p1score += 2
+                } else if (winner == 2) {
+                    state.meta.p2score += 2
+                } else if (winner == 3) {
+                    state.meta.p1score += 1
+                    state.meta.p2score += 1
                 }
-				commit("switchTurn")
-				let index1 = state.meta.p1arrows.indexOf(-1)
-				let index2 = state.meta.p2arrows.indexOf(-2)
-				if (state.whichPlayer == 1) {
-					state.meta.p1arrows[index1] = payload 
-				} else if (state.whichPlayer == 2) {
-					state.meta.p2arrows[index2] = payload
-				}
-				if (help.isSetCompleted(state.meta.p1arrows, state.meta.p2arrows)) {
-					state.meta.setNumber += 1
-                    let winner = help.getSetWinner(state.meta.p1arrows, state.meta.p2arrows)
-					if (winner == 1) {
-						state.meta.p1score += 2
-					} else if (winner == 2) {
-						state.meta.p2score += 2
-					} else if (winner == 3) {
-						state.meta.p1score += 1
-						state.meta.p2score += 1
-					}
-                    state.meta.turn = state.meta.p1score > state.meta.p2score ? 2 : 1
-                }
-                await db.collection('sessions')
-					.doc(state.sessionID)
-					.set({meta: JSON.stringify(state.meta)}, {merge: true})
-				// db.collection('sessions')
-				// 	.doc(state.sessionID)
-				// 	.set({meta: JSON.stringify(state.meta)}, {merge: true})
-				// 	.then(() => {
-				// 		resolve()
-				// 	})
-			})
+                state.meta.turn = state.meta.p1score > state.meta.p2score ? 2 : 1
+            }
+            await db.collection('sessions')
+                .doc(state.sessionID)
+                .set({ meta: JSON.stringify(state.meta) }, { merge: true })
 		},
 	},
 })
