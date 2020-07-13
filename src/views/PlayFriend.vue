@@ -15,11 +15,11 @@
 					<div class="wrapper" style="text-align: center">
 						<div
 							class="card-box"
-							style="width: 40%; display: inline-block"
+							style="width: 50%; display: inline-block"
 						>
 							<div
 								class="text"
-								style="width: 40%; margin: 10px; text-align: left;"
+								style="width: 50%; margin: 10px; text-align: left;"
 							>
 								<strong>Create a live match!</strong>
 								<hr />
@@ -47,11 +47,11 @@
 					<div class="wrapper" style="text-align: center">
 						<div
 							class="card-box"
-							style="width: 40%; display: inline-block"
+							style="width: 50%; display: inline-block"
 						>
 							<div
 								class="text"
-								style="width: 40%; margin: 10px; text-align: left"
+								style="width: 50%; margin: 10px; text-align: left"
 							>
 								<strong>Join a match!</strong>
 								<hr />
@@ -169,7 +169,7 @@ export default {
 	justify-content: center;
 }
 .button-container {
-	margin: 30px;
+	margin: 10px;
 }
 .spinner {
     background-color: white !important;

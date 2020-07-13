@@ -1,0 +1,17 @@
+{
+    "manifest_version": 1,
+    "name": "Archery Matchmaker",
+    "version": "First",
+    "short_name": "Matchmaker",
+    "start_url": "/index.html",
+    "display": "standalone",
+    "background_color": "#FFE9D2",
+    "theme_color": "#FFE1C4",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "target.svg",
+            "sizes": "256x256"
+        }
+    ]
+}
