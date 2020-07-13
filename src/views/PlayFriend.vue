@@ -61,6 +61,7 @@
 								style="margin-top: 10px; width:100%;"
 								placeholder="Enter code"
 								v-model="code"
+                                id="input"
 							></el-input>
 							<el-button
 								class="button"
@@ -82,6 +83,7 @@
 import {mapActions} from 'vuex'
 import {mapGetters} from 'vuex'
 import db from '../firebase/init'
+import ClipboardService from '../services/ClipboardService'
 export default {
 	name: 'PlayFriend',
 	computed: {
@@ -129,7 +131,9 @@ export default {
 			this.readyToWatch = true
             this.showCode = true
             await this.createSession()
-			await this.$copyText(this.getSessionID)
+            await this.$copyText(this.getSessionID)
+            this.code = this.getSessionID
+            ClipboardService(this.getSessionID)
 			this.loading = this.$loading({
 				lock: true,
 				text: `Waiting for opponent to join...\n${this.getSessionID}`,
