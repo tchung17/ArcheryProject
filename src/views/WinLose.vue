@@ -8,7 +8,7 @@
 			<h1>You lost.</h1>
 			The score was {{ getMeta.p1score }} to {{ getMeta.p2score }}
 		</div>
-        <div class="table" style="width: 800px; margin: 20px;">
+        <div class="table" style="width: 80%; margin: 20px;">
             <div class="title" style="text-align: left; margin-left: 30px; font-family: PantonDark">
                 Analysis
             </div>
