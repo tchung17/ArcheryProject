@@ -138,16 +138,14 @@ export default {
                 console.log(err)
             }
             this.code = this.getSessionID
-			this.loading = this.$loading({
-				lock: true,
-				text: `Waiting for opponent to join...\n${this.getSessionID}`,
-				spinner: 'el-icon-loading',
-				background: 'rgba(0, 0, 0, 0.7)',
-			})
+			// this.loading = this.$loading({
+			// 	lock: true,
+			// 	text: `Waiting for opponent to join...\n${this.getSessionID}`,
+			// 	spinner: 'el-icon-loading',
+			// 	background: 'rgba(0, 0, 0, 0.7)',
+			// })
 			this.$message({
                 showClose: true,
-                spinner: "el-icon-loading",
-                target: "button-container",
 				message: 'Code copied to clipboard!',
 				type: 'success',
 			})
@@ -181,5 +179,11 @@ export default {
 }
 .spinner {
     background-color: white !important;
+}
+.code {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
 }
 </style>
