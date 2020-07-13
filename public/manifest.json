@@ -11,7 +11,7 @@
     "icons": [
         {
             "src": "target.svg",
-            "sizes": "256x256"
+            "sizes": "512x512"
         }
     ]
 }
