@@ -4,6 +4,21 @@ function getSetArrows(arrows) {
     let index2 = index1 + 3 > arrows.length ? arrows.length : index1 + 3
 	return arrows.slice(index1, index2)
 }
+function destructure(arrows) {
+    return arrows.reduce((result, arrow, index) => {
+        const chunkIndex = Math.floor(index / 3)
+        if (!result[chunkIndex]) {
+            result[chunkIndex] = {}
+            result[chunkIndex][`Set ${chunkIndex + 1}`] = [] 
+        }
+        if (arrow == 10) {
+            result[chunkIndex][`Set ${chunkIndex + 1}`].push(`${arrow}` + "\xa0")
+        } else {
+            result[chunkIndex][`Set ${chunkIndex + 1}`].push(`${arrow}` + "\xa0\xa0")
+        }
+        return result 
+    }, [])
+}
 function getSetArrowsFilled(arrows, setNumber) {
     let index1 = (setNumber - 1) * 3
     let index2 = index1 + 3 > arrows.length ? arrows.length : index1 + 3
@@ -11,7 +26,7 @@ function getSetArrowsFilled(arrows, setNumber) {
 }
 function getSetWinner(arrows1, arrows2) {
     if (!isSetCompleted(arrows1, arrows2)) {
-        return -1
+        return - 1
     }
     let p1score = getSetArrows(arrows1).reduce((score, arrow) => 
         score + arrow, 0
@@ -46,12 +61,13 @@ function getArrowsAverage(arrows) {
 ;(function main() {
     let test1 = [9, 8, 10, 8, 9, 9]
     let test2 = [9, 8, 10, 8, 9]
-	console.log(getSetWinner(test1, test2))
+	console.log(destructure(test1))
 })()
 
 export default {
     getSetArrowsFilled,
     getSetWinner, 
+    destructure,
     isSetCompleted,
-    getArrowsAverage
+    getArrowsAverage,
 }

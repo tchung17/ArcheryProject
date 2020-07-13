@@ -2,7 +2,7 @@
 	<el-container style="display: flex; justify-content: center">
 		<el-card
 			class="box-card"
-			style="width: 500px; height: 35vh; "
+			style="width: 500px; height: 340px; "
 			body-style="display: flex; align-items: center; justify-content: space-around; height: 100%; padding: 0px;"
 		>
 			<div
@@ -129,37 +129,7 @@ export default {
 				this.p1Name = doc.data().p1ID //temporary
 				this.p2Name = doc.data().p2ID
 			})
-		// let ref = db.collection("sessions").doc(this.getSessionID);
-		// let indices = (this.getSetNumber - 1) * 3
-		// this.p1Arrows = this.getP1Arrows.slice(indices, indices + 3)
-		// this.p2Arrows = this.getP2Arrows.slice(indices, indices + 3)
-		// ref
-		//   .get()
-		//   .then((doc) => {
-		//     let p1ID = doc.data().p1ID;
-		//     let p2ID = doc.data().p2ID;
-		//     let p1Ref = db.collection("players").doc(p1ID);
-		//     let p2Ref = db.collection("players").doc(p2ID);
-		//     p1Ref
-		//       .get()
-		//       .then((doc) => {
-		//         this.p1Name = doc.data().name;
-		//       })
-		//       .catch((err) => {
-		//         console.log(err);
-		//       });
-		//     p2Ref
-		//       .get()
-		//       .then((doc) => {
-		//         this.p2Name = doc.data().name;
-		//       })
-		//       .catch((err) => {
-		//         console.log(err);
-		//       });
-		//   })
-		//   .catch((err) => {
-		//     console.log(err);
-		//   });
+		
 	},
 }
 </script>

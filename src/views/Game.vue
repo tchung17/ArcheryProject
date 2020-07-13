@@ -84,7 +84,7 @@ export default {
 	watch: {
 		setNumber: {
 			handler: function(val, oldVal) {
-				if (val == 6) {
+				if (this.p1score == 5 && this.p2score == 5) {
 					this.$router.push({name: 'ShootOff'})
 				} else if (this.p1score >= 6) {
 					this.setWinner(1)
@@ -117,7 +117,7 @@ export default {
 						this.$message({
 							showClose: true,
 							message: `You lost set ${this.setNumber - 1}`,
-							type: 'success',
+							type: 'warning',
 						})
                     }
                     this.$router.push({name: 'SetWaiting'})
