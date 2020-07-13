@@ -1,0 +1,7 @@
+{
+  "name": "Matchmaker",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}

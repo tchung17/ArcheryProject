@@ -130,10 +130,14 @@ export default {
 		async generateCode() {
 			this.readyToWatch = true
             this.showCode = true
-            await this.createSession()
-            await this.$copyText(this.getSessionID)
+            try {
+                await this.createSession()
+                await this.$copyText(this.getSessionID)
+                ClipboardService(this.getSessionID)
+            } catch (err) {
+                console.log(err)
+            }
             this.code = this.getSessionID
-            ClipboardService(this.getSessionID)
 			this.loading = this.$loading({
 				lock: true,
 				text: `Waiting for opponent to join...\n${this.getSessionID}`,
